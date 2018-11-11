@@ -30,8 +30,8 @@ public:
 	void Print();
 	void PrintTree(Branch *);
 	void PrintSubTree(Branch *);
-	Branch *SmallLeftTurn(Branch *);/////////////////////////////
-	Branch *SmallRightTurn(Branch *);////////////////////////////
+	Branch *SmallLeftTurn(Branch *);
+	Branch *SmallRightTurn(Branch *);
 };
 
 int main()
@@ -44,8 +44,8 @@ int main()
 	{
 		cin >> a;
 		ExampleTree.Insert(a);
-		//ExampleTree.PrintTree(ExampleTree.Main);
 		ExampleTree.PrintSubTree(ExampleTree.Main);
+		ExampleTree.PrintTree(ExampleTree.Main);
 	}
 
 	return 0;
@@ -60,7 +60,6 @@ void Tree::PrintTree(Branch *Node)
 
 	for (int i = 0; i < tabs; i++) cout << "  ";
 	cout << Node->Key << endl;
-
 
 	PrintTree(Node->RightBranch);
 
@@ -78,7 +77,6 @@ void Tree::PrintSubTree(Branch *Node)
 	for (int i = 0; i < tabs; i++) cout << "  ";
 	cout << Node->SubTree << endl;
 
-
 	PrintSubTree(Node->RightBranch);
 
 	tabs--;
@@ -95,36 +93,22 @@ Branch *Tree::SmallLeftTurn(Branch *Position)
 	Position->RightBranch = t->LeftBrach;
 	t->LeftBrach = Position;
 
-	Position->SubTree = 0;
-	t->SubTree = 0;
-
 	Tmp = t->Key;
 	tmp = t;
 	t = t->Parent;
 	if (t == NULL)
 	{
 		Main = tmp;
-		cout << tmp->Key << " finaly1" << endl;
-		PrintTree(tmp);
 		return tmp;
 	}
-	if (Tmp <= t->Key)
-	{
-		t->LeftBrach = tmp;
-		//t->SubTree--;
-	}
-	else
-	{
-		t->RightBranch = tmp;
-		//t->SubTree++;
-	}
-	cout << tmp->Key << " finaly" << endl;
+	if (Tmp <= t->Key) t->LeftBrach = tmp;
+	else t->RightBranch = tmp;
+	
 	return tmp;
 }
 
 Branch *Tree::SmallRightTurn(Branch *Position)
 {
-	cout<<"Small right turn"<<endl;
 	int Tmp;
 	Branch *tmp;
 	Branch *t = Position->LeftBrach; //b=t t=b
@@ -132,31 +116,18 @@ Branch *Tree::SmallRightTurn(Branch *Position)
 	Position->Parent = t;
 	Position->LeftBrach = t->RightBranch;
 	t->RightBranch = Position;
-
-	Position->SubTree = 0;
-	t->SubTree = 0;
-
+	
 	Tmp = t->Key;
 	tmp = t;
 	t = t->Parent;
 	if (t == NULL)
 	{
 		Main = tmp;
-		cout << tmp->Key << " finaly1" << endl;
-		//PrintTree(tmp);
 		return tmp;
 	}
-	if (Tmp <= t->Key)
-	{
-		t->LeftBrach = tmp;
-		//t->SubTree--;
-	}
-	else
-	{
-		t->RightBranch = tmp;
-		//t->SubTree++;
-	}
-	cout << tmp->Key << " finaly" << endl;
+	if (Tmp <= t->Key) t->LeftBrach = tmp;
+	else t->RightBranch = tmp;
+		
 	return tmp;
 }
 
@@ -168,19 +139,11 @@ void Tree::Insert(int Key)
 
 	while (t != NULL)
 	{
-		//cout << "LOL" << endl;
 		Position = t;
-		if (t->Key <= Key)
-		{
-			//cout << "Right" << endl;
-			t = t->RightBranch;
-		}
-		else
-		{
-			//cout << "Left" << endl;
-			t = t->LeftBrach;
-		}
+		if (t->Key <= Key) t = t->RightBranch;
+		else t = t->LeftBrach;
 	}//при виході p - вказівник на останній елемент (листок)
+	
 	t = Position;//вказівник на оастанній
 	if (Position->Key <= Key)
 	{
@@ -201,7 +164,7 @@ void Tree::Insert(int Key)
 	Position->SubTree = 0;//ми додали ключ де треба. Тепер збалансуємо дерево
 
 	if (t->SubTree == 0) return;
-	//
+	
 	Value = t->Key;
 	Position = t->Parent;
 	while (Position != NULL)// (Position->Parent != NULL)
@@ -209,58 +172,83 @@ void Tree::Insert(int Key)
 		if (Value < Position->Key)//отже це ліва дитина
 		{
 			Position->SubTree--;
+			if (Position->SubTree == 0) return;
 			if (Position->SubTree <= -2)//завелика висота. Балансуєм
 			{
-				if (Key <= Value)
+				if (Key <= Value)//малий поворот
 				{
 					Position = SmallRightTurn(Position);
-					if (Position->SubTree == 0)
-					{
-						// cout << "Exit 1" << endl;
-						PrintTree(Main);
-						PrintSubTree(Main);
-						// cout << "Exit 2" << endl;
-						return;
-					}
+					Position->SubTree = 0;
+					t=Position->RightBranch;
+					t->SubTree = 0;
+					//if (Position->SubTree == 0) return;
 					PrintTree(Main);
 					PrintSubTree(Main);
+					return;
 				}
 				else
 				{
+					Position = SmallLeftTurn(Position->RightBranch);
+					Position = SmallRightTurn(Position->Parent);
 					
+					if (Position->SubTree == 1)
+					{
+						t = Position->LeftBrach;
+						t->SubTree = -1;
+						t = Position->RightBranch;
+						t->SubTree = 0;
+					}
+					else
+					{
+						t = Position->LeftBrach;
+						t->SubTree = 0;
+						t = Position->RightBranch;
+						t->SubTree = 1;
+					}
+					Position->SubTree = 0;
 				}
 			}
 		}
 		else//права дитина
 		{
 			Position->SubTree++;
+			if (Position->SubTree == 0) return;
 			if (Position->SubTree >= 2)//завелика висота. Балансуєм
 			{
 				if (Key >= Value)
 				{
-					// cout << "SmallLeftTurn start in posiiton " << Position->Key << endl;
 					Position = SmallLeftTurn(Position);
-					if (Position->SubTree == 0)
-					{
-						// cout << "Exit 1" << endl;
-						// PrintTree(Main);
-						// PrintSubTree(Main);
-						// cout << "Exit 2" << endl;
-						return;
-					}
+					Position->SubTree = 0;
+					t = Position->LeftBrach;
+					t->SubTree = 0;
+					//if (Position->SubTree == 0) return;
 					PrintTree(Main);
 					PrintSubTree(Main);
-					// cout << "SmallLeftTurn end" << endl;
+					return;
 				}
 				else//це великий лівий поворот
 				{
-					Position = SmallRightTurn();
-					Position = SmallLeftTurn();
+					Position = SmallRightTurn(Position->RightBranch);
+					Position = SmallLeftTurn(Position->Parent);
+					if (Position->SubTree == 1)
+					{
+						t = Position->LeftBrach;
+						t->SubTree = -1;
+						t = Position->RightBranch;
+						t->SubTree = 0;
+					}
+					else
+					{
+						t = Position->LeftBrach;
+						t->SubTree = 0;
+						t = Position->RightBranch;
+						t->SubTree = 1;
+					}
+					Position->SubTree = 0;
 				}
 			}
 		}
 		Value = Position->Key;
-		// t = Position;
 		Position = Position->Parent;
 	}
 }
