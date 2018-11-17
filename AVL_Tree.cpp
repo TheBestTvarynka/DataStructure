@@ -30,7 +30,7 @@ public:
 	void BalanceArrangement(Branch *);
 	Branch *SmallLeftTurn(Branch *);
 	Branch *SmallRightTurn(Branch *);
-
+	void ClearTree(Branch *);
 };
 
 int main()
@@ -43,6 +43,7 @@ int main()
 	ExampleTree.Insert(a);
 	ExampleTree.Remove(a);
 	
+	ExampleTree.ClearTree(ExampleTree.Main);
 	return 0;
 }
 
@@ -320,4 +321,11 @@ void Tree::Remove(int Key)
 		Value = t->Key;
 		t = t->Parent;
 	}
+}
+
+void Tree::ClearTree(Branch *Node)
+{
+	if (Node->LeftBranch != NULL) ClearTree(Node->LeftBranch);
+	if (Node->RightBranch != NULL) ClearTree(Node->RightBranch);
+	delete Node;
 }
