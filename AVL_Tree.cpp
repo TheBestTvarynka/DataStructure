@@ -1,5 +1,4 @@
 #include <iostream>
-
 using namespace std;
 
 struct Branch
@@ -13,7 +12,6 @@ struct Branch
 class Tree
 {
 	int tabs;
-	//Branch *Position;
 public:
 	Branch *Main;
 	Tree(int Key)
@@ -28,9 +26,7 @@ public:
 	}
 	void Insert(int);
 	void Remove(int);
-	//void Print();
 	void PrintTree(Branch *);
-	void PrintSubTree(Branch *);
 	void BalanceArrangement(Branch *);
 	Branch *SmallLeftTurn(Branch *);
 	Branch *SmallRightTurn(Branch *);
@@ -40,26 +36,13 @@ public:
 int main()
 {
 	int a, b;
+
 	cin >> a;
 	Tree ExampleTree(a);
-	ExampleTree.PrintSubTree(ExampleTree.Main);
-	cin >> a;
-	while (a != 0)
-	{
-		ExampleTree.Insert(a);
-		ExampleTree.PrintSubTree(ExampleTree.Main);
-		ExampleTree.PrintTree(ExampleTree.Main);
-		cin >> a;
-	}
-	cin >> a;
-	while (a != 0)
-	{
-		ExampleTree.Remove(a);
-		ExampleTree.PrintSubTree(ExampleTree.Main);
-		ExampleTree.PrintTree(ExampleTree.Main);
-		cin >> a;
-	}
-
+	ExampleTree.PrintTree(ExampleTree.Main);
+	ExampleTree.Insert(a);
+	ExampleTree.Remove(a);
+	
 	return 0;
 }
 
@@ -74,22 +57,6 @@ void Tree::PrintTree(Branch *Node)
 	cout << Node->Key << endl;
 
 	PrintTree(Node->RightBranch);
-
-	tabs--;
-	return;
-}
-
-void Tree::PrintSubTree(Branch *Node)
-{
-	if (!Node) return;
-	tabs++;
-
-	PrintSubTree(Node->LeftBranch);
-
-	for (int i = 0; i < tabs; i++) cout << "  ";
-	cout << Node->SubTree << endl;
-
-	PrintSubTree(Node->RightBranch);
 
 	tabs--;
 	return;
@@ -163,7 +130,7 @@ void Tree::BalanceArrangement(Branch *Position)
 	Position->SubTree = 0;
 }
 
-void Tree::Insert(int Key)//можливо можна оптимізувати власне вставку
+void Tree::Insert(int Key)//Ð¼Ð¾Ð¶Ð»Ð¸Ð²Ð¾ Ð¼Ð¾Ð¶Ð½Ð° Ð¾Ð¿Ñ‚Ð¸Ð¼Ñ–Ð·ÑƒÐ²Ð°Ñ‚Ð¸ Ð²Ð»Ð°ÑÐ½Ðµ Ð²ÑÑ‚Ð°Ð²ÐºÑƒ
 {
 	Branch *t = Main, *Position;
 	int Value;
@@ -173,9 +140,9 @@ void Tree::Insert(int Key)//можливо можна оптимізувати �
 		Position = t;
 		if (t->Key <= Key) t = t->RightBranch;
 		else t = t->LeftBranch;
-	}//при виході p - вказівник на останній елемент (листок)
+	}//Ð¿Ñ€Ð¸ Ð²Ð¸Ñ…Ð¾Ð´Ñ– p - Ð²ÐºÐ°Ð·Ñ–Ð²Ð½Ð¸Ðº Ð½Ð° Ð¾ÑÑ‚Ð°Ð½Ð½Ñ–Ð¹ ÐµÐ»ÐµÐ¼ÐµÐ½Ñ‚ (Ð»Ð¸ÑÑ‚Ð¾Ðº)
 
-	t = Position;//вказівник на оастанній
+	t = Position;//Ð²ÐºÐ°Ð·Ñ–Ð²Ð½Ð¸Ðº Ð½Ð° Ð¾Ð°ÑÑ‚Ð°Ð½Ð½Ñ–Ð¹
 	if (Position->Key <= Key)
 	{
 		Position->SubTree++;
@@ -192,26 +159,26 @@ void Tree::Insert(int Key)//можливо можна оптимізувати �
 	Position->RightBranch = NULL;
 	Position->LeftBranch = NULL;
 	Position->Key = Key;
-	Position->SubTree = 0;//ми додали ключ де треба. Тепер збалансуємо дерево
+	Position->SubTree = 0;//Ð¼Ð¸ Ð´Ð¾Ð´Ð°Ð»Ð¸ ÐºÐ»ÑŽÑ‡ Ð´Ðµ Ñ‚Ñ€ÐµÐ±Ð°. Ð¢ÐµÐ¿ÐµÑ€ Ð·Ð±Ð°Ð»Ð°Ð½ÑÑƒÑ”Ð¼Ð¾ Ð´ÐµÑ€ÐµÐ²Ð¾
 
 	if (t->SubTree == 0) return;
 	Value = t->Key;
 	Position = t->Parent;
 	while (Position != NULL)// (Position->Parent != NULL)
 	{
-		if (Value < Position->Key)//отже це ліва дитина
+		if (Value < Position->Key)//Ð¾Ñ‚Ð¶Ðµ Ñ†Ðµ Ð»Ñ–Ð²Ð° Ð´Ð¸Ñ‚Ð¸Ð½Ð°
 		{
 			Position->SubTree--;
-			if (Position->SubTree == 0) return;//значить ми збалансували це піддерево. Вихід
-			if (Position->SubTree == -2)//завелика висота. Балансуєм
+			if (Position->SubTree == 0) return;//Ð·Ð½Ð°Ñ‡Ð¸Ñ‚ÑŒ Ð¼Ð¸ Ð·Ð±Ð°Ð»Ð°Ð½ÑÑƒÐ²Ð°Ð»Ð¸ Ñ†Ðµ Ð¿Ñ–Ð´Ð´ÐµÑ€ÐµÐ²Ð¾. Ð’Ð¸Ñ…Ñ–Ð´
+			if (Position->SubTree == -2)//Ð·Ð°Ð²ÐµÐ»Ð¸ÐºÐ° Ð²Ð¸ÑÐ¾Ñ‚Ð°. Ð‘Ð°Ð»Ð°Ð½ÑÑƒÑ”Ð¼
 			{
-				if (Key <= Value)//малий поворот
+				if (Key <= Value)//Ð¼Ð°Ð»Ð¸Ð¹ Ð¿Ð¾Ð²Ð¾Ñ€Ð¾Ñ‚
 				{
 					Position = SmallRightTurn(Position);
 					Position->SubTree = 0;
 					(Position->RightBranch)->SubTree = 0;
 				}
-				else//великий поворот
+				else//Ð²ÐµÐ»Ð¸ÐºÐ¸Ð¹ Ð¿Ð¾Ð²Ð¾Ñ€Ð¾Ñ‚
 				{
 					Position = SmallLeftTurn(Position->LeftBranch);
 					Position = SmallRightTurn(Position->Parent);
@@ -220,11 +187,11 @@ void Tree::Insert(int Key)//можливо можна оптимізувати �
 				return;
 			}
 		}
-		else//права дитина
+		else//Ð¿Ñ€Ð°Ð²Ð° Ð´Ð¸Ñ‚Ð¸Ð½Ð°
 		{
 			Position->SubTree++;
-			if (Position->SubTree == 0) return;//значить це піддерево стало збалансоване
-			if (Position->SubTree == 2)//завелика висота. Балансуєм
+			if (Position->SubTree == 0) return;//Ð·Ð½Ð°Ñ‡Ð¸Ñ‚ÑŒ Ñ†Ðµ Ð¿Ñ–Ð´Ð´ÐµÑ€ÐµÐ²Ð¾ ÑÑ‚Ð°Ð»Ð¾ Ð·Ð±Ð°Ð»Ð°Ð½ÑÐ¾Ð²Ð°Ð½Ðµ
+			if (Position->SubTree == 2)//Ð·Ð°Ð²ÐµÐ»Ð¸ÐºÐ° Ð²Ð¸ÑÐ¾Ñ‚Ð°. Ð‘Ð°Ð»Ð°Ð½ÑÑƒÑ”Ð¼
 			{
 				if (Key >= Value)
 				{
@@ -232,7 +199,7 @@ void Tree::Insert(int Key)//можливо можна оптимізувати �
 					Position->SubTree = 0;
 					(Position->LeftBranch)->SubTree = 0;
 				}
-				else//це великий лівий поворот
+				else//Ñ†Ðµ Ð²ÐµÐ»Ð¸ÐºÐ¸Ð¹ Ð»Ñ–Ð²Ð¸Ð¹ Ð¿Ð¾Ð²Ð¾Ñ€Ð¾Ñ‚
 				{
 					Position = SmallRightTurn(Position->RightBranch);
 					Position = SmallLeftTurn(Position->Parent);
@@ -248,17 +215,17 @@ void Tree::Insert(int Key)//можливо можна оптимізувати �
 
 void Tree::Remove(int Key)
 {
-	Branch *p = Main, *t;
+	Branch *p = Main, *t = Main;
 	int Value;
 
-	while (p != NULL && p->Key != Key)
+	while (t != NULL && t->Key != Key)
 	{
-		if (Key >= p->Key) p = p->RightBranch;
-		else p = p->LeftBranch;
+		if (Key >= t->Key) t = t->RightBranch;
+		else t = t->LeftBranch;
 	}
 
-	//p = t; t - той що видаляємо
-	if (p == NULL) return;
+	if (t == NULL) return;
+	p = t;
 	if (p->RightBranch == NULL)
 	{
 		if ((p->Parent)->Key <= p->Key)
@@ -268,13 +235,8 @@ void Tree::Remove(int Key)
 		t = p->Parent;
 		if (p->LeftBranch != NULL)
 			(p->LeftBranch)->Parent = p->Parent;
-		if (p->Key < t->Key)
-			t->SubTree++;
-		else
-			t->SubTree--;
 		delete p;
-
-		if ((p->Parent)->SubTree != 0) return;/////////////////////////////
+		Value = Key;
 	}
 	else
 	{
@@ -284,54 +246,45 @@ void Tree::Remove(int Key)
 			p = p->LeftBranch;
 		}
 		t->Key = p->Key;
+		Value = p->Key;
 		if (p == t->RightBranch)
-		{
 			(p->Parent)->RightBranch = p->RightBranch;
-			(p->Parent)->SubTree--;
-			if ((p->Parent)->SubTree == -1) return;/////////////////////////
-		}
 		else
-		{
 			(p->Parent)->LeftBranch = p->RightBranch;
-			(p->Parent)->SubTree++;
-			if ((p->Parent)->SubTree == 1) return;//////////////////////////
-		}
 		if (p->RightBranch != NULL) (p->RightBranch)->Parent = p->Parent;
 		t = p->Parent;
 		delete p;
 	}
-
-	Value = t->Key;
-	t = t->Parent;
+	
 	while (t != NULL)
 	{
 		if (t->Key <= Value)
 		{
 			t->SubTree--;
 			if (t->SubTree == -1) return;
-			if (t->SubTree == -2)//балансуємо
+			if (t->SubTree == -2)//Ð±Ð°Ð»Ð°Ð½ÑÑƒÑ”Ð¼Ð¾
 			{
-				if ((t->LeftBranch)->SubTree == 1)//великий поворот
+				if ((t->LeftBranch)->SubTree == 1)//Ð²ÐµÐ»Ð¸ÐºÐ¸Ð¹ Ð¿Ð¾Ð²Ð¾Ñ€Ð¾Ñ‚
 				{
 
 					t = SmallLeftTurn(t->LeftBranch);
 					t = SmallRightTurn(t->Parent);
 					BalanceArrangement(t);
 				}
-				else//малий поворот
+				else//Ð¼Ð°Ð»Ð¸Ð¹ Ð¿Ð¾Ð²Ð¾Ñ€Ð¾Ñ‚
 				{
 					t = SmallRightTurn(t);
 					if (t->SubTree == -1)
 					{
 						t->SubTree = 0;
 						(t->RightBranch)->SubTree = 0;
-						return;
 					}
 					else
 					{
 						t->SubTree = 1;
 						(t->RightBranch)->SubTree = -1;
-					}//у такому виподку висота заг піддерева -1, тому йдемо далі вверх
+						return;
+					}
 				}
 			}
 		}
@@ -341,7 +294,7 @@ void Tree::Remove(int Key)
 			if (t->SubTree == 1) return;
 			if (t->SubTree == 2)
 			{
-				if ((t->RightBranch)->SubTree == -1)//великий поворот
+				if ((t->RightBranch)->SubTree == -1)//Ð²ÐµÐ»Ð¸ÐºÐ¸Ð¹ Ð¿Ð¾Ð²Ð¾Ñ€Ð¾Ñ‚
 				{
 					t = SmallRightTurn(t->RightBranch);
 					t = SmallLeftTurn(t->Parent);
@@ -354,13 +307,13 @@ void Tree::Remove(int Key)
 					{
 						t->SubTree = 0;
 						(t->LeftBranch)->SubTree = 0;
-						return;
 					}
 					else
 					{
 						t->SubTree = -1;
 						(t->LeftBranch)->SubTree = 1;
-					}//у такому виподку висота заг піддерева -1, тому йдемо далі вверх
+						return;
+					}
 				}
 			}
 		}
