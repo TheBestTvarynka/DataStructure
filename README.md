@@ -8,6 +8,7 @@ Explanation of this filles:
   6) Stack(Link_list) - stack on basis linked list;
   7) Stack_with_range - ordinay stack ob basis resizable array;
   8) Disjoint-set data structure ...;
+  
 For more information:
 https://en.wikipedia.org/wiki/AVL_tree#/  
 https://en.wikipedia.org/wiki/Disjoint-set_data_structure 
