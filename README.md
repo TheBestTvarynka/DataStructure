@@ -9,6 +9,6 @@ Explanation of this filles:
   7) Stack_with_range - ordinay stack ob basis resizable array;
   8) Disjoint-set data structure ...;
 For more information:
-https://en.wikipedia.org/wiki/AVL_tree#/
-https://en.wikipedia.org/wiki/Disjoint-set_data_structure
-https://en.wikipedia.org/wiki/Linked_list
+https://en.wikipedia.org/wiki/AVL_tree#/ \n
+https://en.wikipedia.org/wiki/Disjoint-set_data_structure \n
+https://en.wikipedia.org/wiki/Linked_list \n
