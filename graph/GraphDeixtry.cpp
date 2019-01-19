@@ -1,6 +1,5 @@
 #include <iostream>
 #include <list>
-#include <queue>
 #include <iterator>
 #include <fstream>		// it's for using file
 #include <limits>		// it's for using infinity(max value of distance)
@@ -20,9 +19,8 @@ private:
 	bool *Visited;
 	int Size;
 	ifstream Input;
-public:
-	queue<int> Nodes;
 	int *Distances;
+public:
 	Graph();
 	void BuildGraph();
 	void PrintGraph();
@@ -69,31 +67,23 @@ void Graph::InitDeixtry(int Point)
 	while(Next != -1)
 	{
 		Next = Deixtry(Next);
-		//PrintGraph();
 	}
 }
 int Graph::Deixtry(int Point)
 {
-	//Distances[Vertex] = 0;
 	bool b = false;
 	list<Node>::iterator i; // перебирає усіх сусідів вершини
 	list<Node>::iterator Min = Vertex[Point].begin(); // мінімальний вказує на першого сусіда Point
 
 	while (Min != Vertex[Point].end() && Visited[(*Min).Vertex])
-	{
 		*Min++;
-	}
+
 	for (i = Vertex[Point].begin(); i != Vertex[Point].end(); *i++)
 	{
 		if (Distances[Point] + (*i).Weight < Distances[(*i).Vertex])
-		{
 			Distances[(*i).Vertex] = Distances[Point] + (*i).Weight;
-		}
-
 		if (Visited[(*i).Vertex] == false && (*Min).Weight >= (*i).Weight)
-		{
 			Min = i;
-		}
 	}
 	Visited[Point] = true;
 
@@ -108,31 +98,33 @@ void Graph::BuildGraph()
 
 	Node Element;
 
-    ifstream input;
-    input.open("List_Input_A (copy).txt");
-	if (!input.is_open())
+    // ifstream input;
+    // input.open("List_Input_A (copy).txt");
+	if (!Input.is_open())
 	{
 		cout << "Error: Can't find file." << endl;
 		return;
 	}
-	input >> a;
-	input >> a;
+	//input >> a;
+	Input >> a;
 
-	while (!input.eof())
+	while (!Input.eof())
 	{
 		start = a;
-		input >> end;
-		input >> weight;
+		Input >> end;
+		Input >> weight;
+
 		Element.Vertex = --end;
 		Element.Weight = weight;
-        cout << start << " Vertex " << end << " - " << weight << endl;
+        //cout << start << " Vertex " << end << " - " << weight << endl;
 		v = Vertex[--start].end();
 		Vertex[start].insert(v, Element);
 		Visited[start] = false;
-		input >> a;
+
+		Input >> a;
 	}
 
-	input.close();
+	Input.close();
 }
 
 void Graph::PrintGraph()
