@@ -31,12 +31,13 @@ public:
 
 int main()
 {
-    int a;
-    cin >> a;
+	int a;
+	cout << "Enter vertex: " << endl;
+	cin >> a;
 	Graph A;
 	A.BuildGraph();
 	A.PrintGraph();
-    A.InitDeixtry(a);
+	A.InitDeixtry(a);
 	A.PrintGraph();
 
 	return 0;
@@ -64,10 +65,8 @@ void Graph::InitDeixtry(int Point)
 {
 	Distances[Point] = 0;
 	int Next = Point;
-	while(Next != -1)
-	{
-		Next = Deixtry(Next);
-	}
+	while (Next != -1)
+        Next = Deixtry(Next);
 }
 int Graph::Deixtry(int Point)
 {
@@ -98,14 +97,11 @@ void Graph::BuildGraph()
 
 	Node Element;
 
-    // ifstream input;
-    // input.open("List_Input_A (copy).txt");
 	if (!Input.is_open())
 	{
 		cout << "Error: Can't find file." << endl;
 		return;
 	}
-	//input >> a;
 	Input >> a;
 
 	while (!Input.eof())
@@ -116,7 +112,7 @@ void Graph::BuildGraph()
 
 		Element.Vertex = --end;
 		Element.Weight = weight;
-        //cout << start << " Vertex " << end << " - " << weight << endl;
+
 		v = Vertex[--start].end();
 		Vertex[start].insert(v, Element);
 		Visited[start] = false;
@@ -138,10 +134,8 @@ void Graph::PrintGraph()
 			cout << "(" << (*v).Vertex + 1 << ", " << (*v).Weight << ") ";
 		cout << endl;
 	}
-	//cout << endl << "svds" << endl;
+
 	for (int j = 0; j < Size; j++)
-	{
-		cout << Distances[j] << " ";
-	}
+        cout << Distances[j] << " ";
 	cout << endl;
 }
