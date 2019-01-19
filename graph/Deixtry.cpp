@@ -67,9 +67,11 @@ void Graph::InitDeixtry(int Point)
 	int Next = Point;
 	while (Next != -1)
         Next = Deixtry(Next);
+    cout << endl;
 }
 int Graph::Deixtry(int Point)
 {
+	cout << Point + 1 << " ";
 	bool b = false;
 	list<Node>::iterator i; // перебирає усіх сусідів вершини
 	list<Node>::iterator Min = Vertex[Point].begin(); // мінімальний вказує на першого сусіда Point
