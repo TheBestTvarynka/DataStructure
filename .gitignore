@@ -1,4 +1,6 @@
 *.o
-*.tx
-
+*.txt
 !*.cpp
+/graph/Belman_Ford
+/graph/GraphDeixtry
+/graph/Deixtry
