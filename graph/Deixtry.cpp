@@ -22,7 +22,6 @@ private:
 	int *Distances;
 public:
 	Graph();
-	void BuildGraph();
 	void PrintGraph();
 	int Deixtry(int);
 	void InitDeixtry(int );
@@ -32,25 +31,30 @@ public:
 int main()
 {
 	int a;
-	cout << "Enter vertex: " << endl;
-	cin >> a;
 	Graph A;
-	A.BuildGraph();
+
+	cin >> a;
+
 	A.PrintGraph();
 	A.InitDeixtry(a);
 	A.PrintGraph();
-
 	return 0;
 }
 
 Graph::Graph(void)
 {
-	Input.open("List_Input_A (copy).txt");
+	int start, end, weight, a;
+	list<Node>::iterator v;
+
+	Node Element;
+
+	Input.open("List_Input_A (copy)1.txt");
 	if (!Input.is_open())
 	{
 		cout << "Error: Can't find file." << endl;
 		return;
 	}
+
 	Input >> Size;
 	Visited = new bool[Size];
 	Vertex = new list<Node>[Size];
@@ -60,14 +64,45 @@ Graph::Graph(void)
 		Distances[i] = numeric_limits<int>::max();
 		Visited[i] = false;
 	}
+
+	Input >> start;
+	while (!Input.eof())
+	{
+		Input >> end;
+		Input >> weight;
+
+		Element.Vertex = --end;
+		Element.Weight = weight;
+
+		v = Vertex[--start].end();
+		Vertex[start].insert(v, Element);
+		Visited[start] = false;
+
+		Input >> start;
+	}
+
+	Input.close();
 }
 void Graph::InitDeixtry(int Point)
 {
+
 	Distances[Point] = 0;
-	int Next = Point;
+	int Next = Point, count = 0;
+
 	while (Next != -1)
-        Next = Deixtry(Next);
-    cout << endl;
+		Next = Deixtry(Next);
+
+	// дивимося чи є ще вершини в які ми не заходили
+	for (count = 0; count < Size; count++)
+	{
+		if (Visited[count] == false)
+		{
+			Next = Deixtry(count);
+			while (Next != -1)
+				Next = Deixtry(Next);
+		}
+	}
+	cout << endl;
 }
 int Graph::Deixtry(int Point)
 {
@@ -92,39 +127,6 @@ int Graph::Deixtry(int Point)
 	else return -1;
 }
 
-void Graph::BuildGraph()
-{
-	int start, end, weight, a;
-	list<Node>::iterator v;
-
-	Node Element;
-
-	if (!Input.is_open())
-	{
-		cout << "Error: Can't find file." << endl;
-		return;
-	}
-	Input >> a;
-
-	while (!Input.eof())
-	{
-		start = a;
-		Input >> end;
-		Input >> weight;
-
-		Element.Vertex = --end;
-		Element.Weight = weight;
-
-		v = Vertex[--start].end();
-		Vertex[start].insert(v, Element);
-		Visited[start] = false;
-
-		Input >> a;
-	}
-
-	Input.close();
-}
-
 void Graph::PrintGraph()
 {
 	list<Node>::iterator v;
@@ -138,6 +140,6 @@ void Graph::PrintGraph()
 	}
 
 	for (int j = 0; j < Size; j++)
-        cout << Distances[j] << " ";
+		cout << Distances[j] << " ";
 	cout << endl;
 }

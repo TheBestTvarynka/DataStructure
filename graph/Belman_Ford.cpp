@@ -6,22 +6,21 @@
 using namespace std;
 
 struct edges
-{
-	int u, v, w;
-};
+{ int u, v, w; };
 
 class Graph
 {
-	vector<edges > Edges;
+	vector<edges > G;
 	ifstream Input;
 	int *Distance;
+	bool *Visited;
 	int Size;
 public:
 	Graph();
 	void PrintGraph();
-	void BelmanFord(int);
+	void BelmanFord(int );
+	void DFS(int );
 	//~Graph();
-
 };
 
 int main()
@@ -36,20 +35,56 @@ int main()
 	return 0;
 }
 
+void Graph::DFS(int Point)
+{
+	if (Visited[Point] == true)
+		return;
+
+	Distance[Point] = numeric_limits<int>::min();
+	Visited[Point] = true;
+	for (int i = 0; i < G.size(); i++)
+	{
+		if (G[i].u == Point && Visited[G[i].v] == false)
+			DFS(G[i].v);
+	}
+}
 void Graph::BelmanFord(int Point)
 {
-	int vsize = Edges.size();
+	int vsize = G.size(), INF = numeric_limits<int>::max();
+	vector<int > v;
+	bool flg = false; // він просто поліпшує роботу
+	// Якшо на якійсь ітерації ми нічого не змінили
+	// то і на наступній нічого нее змінимо
 
 	Distance[Point] = 0;
-	for (int count = 0; count < Size - 1; count++)
+	for (int count = 0; count < Size; count++)
 	{
+		flg = false;
 		for (int i = 0; i < vsize; i++)
 		{
-			if (Distance[Edges[i].u] != numeric_limits<int>::max() && Distance[Edges[i].u] + Edges[i].w < Distance[Edges[i].v])
+			if (Distance[G[i].u] != INF)
 			{
-				Distance[Edges[i].v] = Distance[Edges[i].u] + Edges[i].w;
+				if (Distance[G[i].u] + G[i].w < Distance[G[i].v])
+				{
+					if (count == Size - 1)
+					{
+						// це означає що вершина u лежить на циклі (<0) або на ребрах, що ведуть від циклів
+						// від u ми маємо запустити пошук в глибину (dfs)
+						v.push_back(G[i].v);
+					}
+					else Distance[G[i].v] = Distance[G[i].u] + G[i].w;
+					flg = true;
+				}
 			}
 		}
+		if (!flg) break;
+	}
+	if (v.size() != 0)
+	{
+		Visited = new bool[Size];
+		for (int t = 0; t < Size; t++) Visited[t] = false;
+		for (int j = 0; j < v.size(); j++)
+			DFS(v[j]);
 	}
 }
 
@@ -74,7 +109,7 @@ Graph::Graph(void)
 		Buff.u = --a;
 		Buff.v = --e;
 		Buff.w = w;
-		Edges.push_back(Buff);
+		G.push_back(Buff);
 		Input >> a;
 	}
 	Input.close();
@@ -83,12 +118,10 @@ Graph::Graph(void)
 }
 void Graph::PrintGraph()
 {
-	for (int i = 0; i < Edges.size(); i++)
-	{
-		cout << "(" << Edges[i].u + 1 << " " << Edges[i].v + 1 << ") - " << Edges[i].w << endl;
-	}
-
+	for (int i = 0; i < G.size(); i++)
+		cout << "(" << G[i].u + 1 << " " << G[i].v + 1 << ") - " << G[i].w << endl;
+	cout << "Distances: " << endl;
 	for (int j = 0; j < Size; j++)
-        cout << Distance[j] << " ";
+		cout << Distance[j] << " ";
 	cout << endl;
 }
