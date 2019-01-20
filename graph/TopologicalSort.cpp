@@ -43,9 +43,7 @@ Graph::Graph(void)
 		return;
 	}
 	Input >> Size;
-
 	G = new list<int>[Size];
-	cout << "qwe" << endl;
 	Visited = new bool[Size];
 
 	Input >> s;

@@ -65,7 +65,7 @@ bool Tree::Search_LCA(int a, int b, Branch *Node, Branch *(&Find))
 {
 	if (Node == NULL) return false;
 	if (Find != NULL) return true;
-	cout << Node->Key << endl;
+	// cout << Node->Key << endl;
 
 	bool left = false, right = false, node = false;
 	if (Node->Key == a || Node->Key == b)
