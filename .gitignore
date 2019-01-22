@@ -1,5 +1,6 @@
 *.o
 *.txt
+*.out
 !*.cpp
 /graph/Belman_Ford
 /graph/Deixtry
