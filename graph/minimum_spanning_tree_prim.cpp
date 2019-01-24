@@ -4,7 +4,7 @@
 #include <iostream>
 #include <list>
 #include <iterator>
-#include <fstream>		// it's for using file
+#include <fstream>
 #include <vector>
 
 using namespace std;
@@ -20,27 +20,24 @@ class Graph
 private:
 	vector<Node> *graph;
 	int Size;
-	//vector<Node > graph;
 	/////////////////
 	vector<edge> queue;
-	vector<Node> *mst; // final minimal spanning tree
+	vector<Node> *mst;			// final minimal spanning tree
 	bool *used;
 public:
 	Graph();					// constructor build the graph form file
-	void PrintGraph();			// show graph on the screen
+	~Graph();					// destructor free memory
 	void MST_Prim();			// MST - minimal spanning tree
 	void Insert_queue(edge );
 	void Insert_mst(edge );
-	void Remove();
-	void Print();
-	//~Graph();
+	void Print(vector<Node > *);
 };
 
 int main()
 {
 	Graph A;
-	A.PrintGraph();
 	A.MST_Prim();
+	A.~Graph();
 	return 0;
 }
 
@@ -56,28 +53,31 @@ void Graph::MST_Prim()
 	for (int j = 1; j < graph[0].size(); j++)
 	{
 		Buff.to = graph[0][j].to;
-		Buff.weight = graph[0][j].weight;	
+		Buff.weight = graph[0][j].weight;
 		Insert_queue(Buff);
 	}
 	used[0] = true;
-	
+
 	while (queue.size() != 0)
 	{
 		while (used[queue[0].to] && queue.size() >= 1)
 			queue.erase(queue.begin());
-		if (queue.size() == 0) return;
+		if (queue.size() == 0)
+		{
+			Print(mst);
+			return;
+		}
 
-		Insert_mst(queue[0]);		// add minimal edge in mst
+		Insert_mst(queue[0]);			// add minimal edge in mst
 		Buff.from = queue[0].to;
-		used[queue[0].to] = true;	// mart as used
-		queue.erase(queue.begin());	// delete current (first) edge becouse it in tree
+		used[queue[0].to] = true;		// mart as used
+		queue.erase(queue.begin());		// delete current (first) edge becouse it in tree
 		for (int i = 0; i < graph[Buff.from].size(); i++)
 		{
 			Buff.to = graph[Buff.from][i].to;
 			Buff.weight = graph[Buff.from][i].weight;
 			Insert_queue(Buff);
 		}
-		Print();
 	}
 }
 void Graph::Insert_queue(edge e)
@@ -96,23 +96,17 @@ void Graph::Insert_mst(edge e)
 	Buff.weight = e.weight;
 	mst[e.from].push_back(Buff);
 }
-void Graph::Print()
+void Graph::Print(vector<Node > *St)
 {
-	int a;
-	cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=" << endl;
-	cout << "Queue: " << endl;
-	for (int i = 0; i < queue.size(); i++)
-		cout << "(" << queue[i].from + 1 << " -> " << queue[i].to + 1 << ") : " << queue[i].weight << endl;
-	cout << "MST: " << endl;
-	for (int j = 0; j < Size; j++)
+	cout << "-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
+	for (int i = 0; i < Size; i++)
 	{
-		cout << j + 1 << " -> ";
-		for (int v = 0; v < mst[j].size(); v++)
-			cout << "(" << mst[j][v].to + 1 << ", " << mst[j][v].weight << ") ";
+		cout << i + 1 << " -> ";
+		for (int v = 0; v < St[i].size(); v++)
+			cout << "(" << St[i][v].to + 1 << ", " << St[i][v].weight << ") ";
 		cout << endl;
 	}
-	cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=" << endl;
-	//cin >> a;
+	cout << "-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
 }
 Graph::Graph(void)
 {
@@ -146,14 +140,11 @@ Graph::Graph(void)
 		Input >> start;
 	}
 	Input.close();
+	Print(graph);
 }
-void Graph::PrintGraph()
+Graph::~Graph(void)
 {
-	for (int i = 0; i < Size; i++)
-	{
-		cout << i + 1 << " -> ";
-		for (int v = 0; v < graph[i].size(); v++)
-			cout << "(" << graph[i][v].to + 1 << ", " << graph[i][v].weight << ") ";
-		cout << endl;
-	}
+	delete [] used;
+	delete [] graph;
+	// delete [] mst;
 }
