@@ -112,7 +112,6 @@ Graph::Graph(void)
 {
 	ifstream Input;
 	int start, end, weight;
-	list<Node>::iterator v;
 	Node Buff;
 
 	Input.open("List_Input_A (copy)1.txt");
