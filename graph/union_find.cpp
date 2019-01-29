@@ -19,7 +19,9 @@ void union_find::Print()
 {
 	cout << "-------------------------" << endl;
 	for (int i = 0; i < Size; i++)
+	{
 		cout << i + 1 << " -> " << Parent[i] << endl;
+	}
 	cout << "-------------------------" << endl;
 }
 int union_find::find_set(int v)
@@ -43,7 +45,7 @@ bool union_find::union_set(int v, int u)
 	}
 	return false;
 }
-void union_find::Init(int size)				// constructor of the class
+void union_find::Init(int size)			// constructor of the class
 {
 	Size = size;
 	Parent = new int[Size];
