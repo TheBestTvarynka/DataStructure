@@ -28,7 +28,6 @@ int main()
     }
     cin >> a;
     cout << "Pop:\n";
-    a = 1;
     while (a != 0)
     {
         cout << A.pop() << endl;
@@ -84,7 +83,7 @@ int Stack::pop()
         cout << "Error: Stack is empty!" << endl;
         return 0;
     }
-    if (top <= Size/2)
+    if (top <= Size/4)
         resize((int)(Size/2));
     top--;
     return ArrayStack[top];

@@ -31,7 +31,7 @@ class stack:
             return
         self.top -= 1
         result = self.array[self.top]
-        if self.top > 1 and self.top < self.size // 2:
+        if self.top > 1 and self.top < self.size // 4:
             self.resize(self.size // 2)
         return result
 
