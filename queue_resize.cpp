@@ -110,21 +110,26 @@ void queue::push(int item)
 int main()
 {
     queue A;
-    int a = 1;
-    while (a != 0)
-    {
-        cin >> a;
-        A.push(a);
-        A.print();
-    }
-    cin >> a;
-    cout << "Pop:\n";
-    while (a != 0)
-    {
-        cout << A.pop() << endl;
-        A.print();
-        cin >> a;
-    }
+    A.push(6);
+    A.push(7);
+    A.push(8);
+    A.push(9);
+    A.push(0);
+    A.push(10);
+    A.push(11);
+    A.push(12);
+    A.print();
+    A.pop();
+    A.pop();
+    A.pop();
+    A.pop();
+    A.pop();
+    A.print();
+    A.push(1);
+    A.push(2);
+    A.push(3);
+    A.push(4);
+    A.push(5);
     A.print();
     A.~queue();
     return  0;
