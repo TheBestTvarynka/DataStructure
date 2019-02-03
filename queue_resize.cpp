@@ -85,6 +85,8 @@ int queue::pop()
     bottom++;
     // if bottom will be equal 0 it's mean that queue is empty
     if (top < bottom)
+    	if (bottom == size)
+    		bottom = 0;
         s = size - bottom + size;
     if (top > bottom)
         s = top - bottom;
