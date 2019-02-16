@@ -2,26 +2,26 @@
 
 using namespace std;
 
-struct Element_of_the_Stack
+struct Node
 {
 	int Value;
-	Element_of_the_Stack *Next;
+	Node *Next;
 };
 
 class Stack
 {
-	Element_of_the_Stack *Main;
-	Element_of_the_Stack *Position;
+	Node *Main;
+	Node *Position;
 public:
 	Stack()
 	{
-		Main = new (Element_of_the_Stack);
+		Main = new (Node);
 		Main->Next=NULL;
 		Position=Main;
 	};
 	void Print()
 	{
-		Element_of_the_Stack *t;
+		Node *t;
 		t=Main;
 		t=t->Next;
 		while(t!=NULL)
@@ -33,16 +33,16 @@ public:
 	}
 	void Push(int Value)
 	{
-		Element_of_the_Stack *t;
-		t=new (Element_of_the_Stack);
+		Node *t;
+		t=new (Node);
 		t->Value=Value;
 		t->Next=Main->Next;
 		Main->Next=t;
 	}
 	void Pop()
 	{
-		Element_of_the_Stack *t;
-		Element_of_the_Stack *p;
+		Node *t;
+		Node *p;
 		t=Main->Next;
 		p=t->Next;
 		cout<<t->Value<<endl;
@@ -53,7 +53,7 @@ public:
 	int Size()
 	{
 		int size=0;
-		Element_of_the_Stack *t;
+		Node *t;
 		
 		t=Main;
 		while(t->Next!=NULL)

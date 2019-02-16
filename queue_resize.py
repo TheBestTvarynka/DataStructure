@@ -46,17 +46,12 @@ class queue:
     def push(self, item):
         self.array[self.top] = item
         self.top += 1
-        if self.top == self.button:
+        if self.is_full():
             self.resize(self.size * 2)
-        if self.top == self.size:
-            if self.button > 0:
-                self.top = 0
-            else:
-                self.resize(self.size * 2)
 
     def pop(self):
         s = self.size
-        if self.top == self.button:
+        if self.is_empty():
             print('Error: Queue is empty')
             return 0
         result = self.array[self.button]
@@ -70,6 +65,21 @@ class queue:
         if s <= self.size // 4:
             self.resize(self.size // 2)
         return result
+        
+
+    def is_full(self):
+        # queue is full in two case: 1) when top == size (button < top) or 2) button == top (top < button)
+        if self.top > self.button and self.top == self.size:
+            if self.button > 0:
+                self.top = 0
+                return False
+            return True
+        if self.top == self.button:
+            return True
+
+    def is_empty(self):
+        if self.button == self.top:
+            return True
 
 
 A = queue()

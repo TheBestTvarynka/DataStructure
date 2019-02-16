@@ -4,28 +4,27 @@
 
 using namespace std;
 
-struct Element_of_the_List
+struct Node
 {
 	int Value;
-	Element_of_the_List *Next;
+	Node *Next;
 };
 
 class List
 {
-	Element_of_the_List *Main;
-	Element_of_the_List *Position;
+	Node *Main;
+	Node *Position;
 public:
 	List()
 	{
-		Main = new Element_of_the_List;
+		Main = new Node;
 		Main->Next = NULL;
 		Position = Main;
 	};
 	void Print()
 	{
-		Element_of_the_List *t;
+		Node *t;
 		t = Main->Next;
-		
 		while (t != NULL)
 		{
 			cout << t->Value << " ";
@@ -35,9 +34,9 @@ public:
 	}
 	void Push(int Value)
 	{
-		Element_of_the_List *t;
+		Node *t;
 		t = Position;
-		t->Next = new Element_of_the_List;
+		t->Next = new Node;
 		t = t->Next;
 		t->Value = Value;
 		t->Next = NULL;
@@ -46,22 +45,20 @@ public:
 	int Pop()
 	{
 		int e;
-		Element_of_the_List *t;
-		Element_of_the_List *p;
-
+		Node *t;
+		Node *p;
 		t = Main->Next;
 		if (t == NULL)
 			return 0;
 		p = t->Next;
 		e = t->Value;
 		delete t;
-
 		Main->Next = p;
 		return e;
 	}
-	int is_emty()
+	int is_empty()
 	{
-		Element_of_the_List *t;
+		Node *t;
 		t = Main->Next;
 		if (t == NULL) return false;
 		else return true;
@@ -69,8 +66,7 @@ public:
 	int Size()
 	{
 		int size = 0;
-		Element_of_the_List *t = Main;
-
+		Node *t = Main;
 		while (t->Next != NULL)
 		{
 			t = t->Next;
@@ -80,7 +76,7 @@ public:
 	}
 	void Cear()
 	{
-		Element_of_the_List *Item = Main->Next, *Next;
+		Node *Item = Main->Next, *Next;
 		while (Item != NULL)
 		{
 			Next = Item->Next;
@@ -95,13 +91,14 @@ public:
 void Sum1(List &A, List &B, List &C)
 {
 	int sum, rem = 0;
-	while (A.is_emty() || B.is_emty())
+	while (A.is_empty() || B.is_empty())
 	{
 		sum = A.Pop() + B.Pop();
 		C.Push((sum + rem) % 10);
 		rem = (int)((sum + rem) / 10);
 	}
-	if (rem == 1) C.Push(1);
+	if (rem == 1)
+		C.Push(1);
 }
 
 void Sum2(List &A, List &B, List &C)
@@ -110,15 +107,19 @@ void Sum2(List &A, List &B, List &C)
 	int n, n1;
 
 	n = A.Size();
-	for (int i = 1; i <= n; i++) First += A.Pop() * pow(10, (n - i));
+	for (int i = 1; i <= n; i++)
+		First += A.Pop() * pow(10, (n - i));
 
 	n1 = B.Size();
-	for (int j = 1; j <= n1; j++) Second += B.Pop() * pow(10, (n1 - j));
+	for (int j = 1; j <= n1; j++)
+		Second += B.Pop() * pow(10, (n1 - j));
 	
 	Result = First + Second;
 	
-	if (n < n1) n = n1;
-	if (Result >= pow(10, n)) n++;
+	if (n < n1)
+		n = n1;
+	if (Result >= pow(10, n))
+		n++;
 	
 	for (int l = n - 1; l >= 0; l--)
 	{
@@ -149,7 +150,7 @@ int main()
 	}
 	input_file.close();
 
-	//Sum1(A, B, Result);
+	// Sum1(A, B, Result);
 	Sum2(A, B, Result);
 	Result.Print();
 	

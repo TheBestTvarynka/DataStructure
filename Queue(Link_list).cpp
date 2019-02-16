@@ -2,25 +2,25 @@
 
 using namespace std;
 
-struct Element_of_the_Queue
+struct Node
 {
 	int Value;
-	Element_of_the_Queue *Next;
+	Node *Next;
 };
 
 class Queue
 {
-	Element_of_the_Queue *Main;
-	Element_of_the_Queue *Position;
+	Node *Main;
+	Node *Position;
 public:
 	Queue()
 	{
-		Main = new (Element_of_the_Queue);
+		Main = new (Node);
 		Position=Main;
 	};
 	void Print()
 	{
-		Element_of_the_Queue *t;
+		Node *t;
 		t=Main;
 		t=t->Next;
 		while(t!=NULL)
@@ -32,9 +32,9 @@ public:
 	}
 	void Push(int Value)
 	{
-		Element_of_the_Queue *t;
+		Node *t;
 		t=Position;
-		t->Next=new Element_of_the_Queue;
+		t->Next=new Node;
 		t=t->Next;
 		t->Value=Value;
 		t->Next=NULL;
@@ -42,8 +42,8 @@ public:
 	}
 	void Pop()
 	{
-		Element_of_the_Queue *t;
-		Element_of_the_Queue *p;
+		Node *t;
+		Node *p;
 		t=Main->Next;
 		p=t->Next;
 		cout<<t->Value<<endl;
@@ -53,20 +53,20 @@ public:
 	}
 	void Front()
 	{
-		Element_of_the_Queue *t;
+		Node *t;
 		t=Main;
 		t=t->Next;
 		cout<<t->Value<<endl;
 	}
 	void Back()
 	{
-		Element_of_the_Queue *t;
+		Node *t;
 		cout<<Position->Value<<endl;
 	}
 	int Size()
 	{
 		int size=0;
-		Element_of_the_Queue *t;
+		Node *t;
 		
 		t=Main;
 		while(t->Next!=NULL)
