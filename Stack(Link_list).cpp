@@ -2,85 +2,93 @@
 
 using namespace std;
 
+template <typename T>
 struct Node
 {
-	int Value;
-	Node *Next;
+    T Value;
+    Node *Next;
 };
 
+template <typename T>
 class Stack
 {
-	Node *Main;
-	Node *Position;
+    Node<T> *Head;
 public:
-	Stack()
-	{
-		Main = new (Node);
-		Main->Next=NULL;
-		Position=Main;
-	};
-	void Print()
-	{
-		Node *t;
-		t=Main;
-		t=t->Next;
-		while(t!=NULL)
-		{
-			cout<<t->Value<<" ";
-			t=t->Next;
-		}
-		cout<<endl;
-	}
-	void Push(int Value)
-	{
-		Node *t;
-		t=new (Node);
-		t->Value=Value;
-		t->Next=Main->Next;
-		Main->Next=t;
-	}
-	void Pop()
-	{
-		Node *t;
-		Node *p;
-		t=Main->Next;
-		p=t->Next;
-		cout<<t->Value<<endl;
-		delete t;
-		
-		Main->Next=p;
-	}
-	int Size()
-	{
-		int size=0;
-		Node *t;
-		
-		t=Main;
-		while(t->Next!=NULL)
-		{
-			t=t->Next;
-			size++;
-		}
-		return size;
-	}
-	//~Stack();
+    Stack();
+    void push(T );
+    bool pop(T &);
+    bool top(T &);
+    bool is_empty();
+    int size();
+    void print();
+    //~Stack();
 };
 
-int main()
+template <typename T>
+Stack<T>::Stack()
 {
-	Stack A;
-	
-	A.Push(5);
-	A.Push(9);
-	A.Push(1);
-	A.Push(7);
-	A.Print();
-	cout<<A.Size()<<endl;
-
-	A.Pop();
-	A.Pop();
-	A.Print();
-	cout<<A.Size()<<endl;
-	
-	return 0;
+    Head = new (Node<T>);
+    Head->Next = nullptr;
+};
+template <typename T>
+void Stack<T>::print()
+{
+    Node<T> *t;
+    t = Head;
+    t = t->Next;
+    while (t != nullptr)
+    {
+        cout << t->Value << " ";
+        t = t->Next;
+    }
+    cout << endl;
+}
+template <typename T>
+bool Stack<T>::is_empty()
+{
+    if (Head->Next == nullptr)
+        return true;
+    return false;
+}
+template <typename T>
+void Stack<T>::push(T Value)
+{
+    Node<T> *t;
+    t = new (Node<T>);
+    t->Value = Value;
+    t->Next = Head->Next;
+    Head->Next = t;
+}
+template <typename T>
+bool Stack<T>::pop(T &out)
+{
+    if (is_empty())
+        return false;
+    Node<T> *t;
+    t = Head->Next;
+    Head->Next = t->Next;
+    out = t->Value;
+    delete t;
+    return true;
+}
+template <typename T>
+bool Stack<T>::top(T &out)
+{
+    if (is_empty())
+        return false;
+    out = (Head->Next)->Value;
+    return true;
+}
+template <typename T>
+int Stack<T>::size()
+{
+    int Size = 0;
+    Node<T> *t;
+    t = Head;
+    while (t->Next != nullptr)
+    {
+        t = t->Next;
+        Size++;
+    }
+    return Size;
 }

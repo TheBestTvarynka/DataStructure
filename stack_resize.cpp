@@ -2,89 +2,107 @@
 
 using namespace std;
 
+template <typename T>
 class Stack
 {
-    int *ArrayStack;
+    T *ArrayStack;
+    int Capasity;
     int Size;
-    int top;
 public:
     Stack();
-    void push(int );
-    int pop();
+    void push(T );
+    bool pop(T &);
+    bool top(T &);
+    bool is_empty();
     void print();
+    int size();
     void resize(int );
     ~Stack();
 };
 
 int main()
 {
-    Stack A;
-    int a = 1;
-    while (a != 0)
-    {
-        cin >> a;
-        A.push(a);
-        A.print();
-    }
-    cin >> a;
-    cout << "Pop:\n";
-    while (a != 0)
-    {
-        cout << A.pop() << endl;
-        A.print();
-        cin >> a;
-    }
-    A.print();
-    A.~Stack();
+    char a;
+    Stack<char > exapmle;
+    exapmle.push('d');
+    exapmle.push('b');
+    exapmle.push('q');
+    exapmle.push('k');
+    exapmle.print();
+    exapmle.pop(a);
+    cout << a << endl;
+    cout << exapmle.size() << endl;
     return 0;
 }
 
-Stack::Stack()
+template <typename T>
+Stack<T>::Stack()
 {
-    Size = 5;
-    ArrayStack = new int[Size];
-    top = 0;
+    Capasity = 5;
+    ArrayStack = new T[Capasity];
+    Size = 0;
 }
-Stack::~Stack()
+template <typename T>
+Stack<T>::~Stack()
 {
     delete [] ArrayStack;
 }
-void Stack::print()
+template <typename T>
+void Stack<T>::print()
 {
     cout << "-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
-    for (int i = 0; i < top; i++)
+    for (int i = 0; i < Size; i++)
         cout << ArrayStack[i] << " ";
     cout << endl;
     cout << "-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
 }
-void Stack::push(int value)
+template <typename T>
+void Stack<T>::push(T value)
 {
-    if (top == Size)
-        resize(Size * 2);
-    ArrayStack[top] = value;
-    top++;
+    if (Size == Capasity)
+        resize(Capasity * 2);
+    ArrayStack[Size] = value;
+    Size++;
 }
-void Stack::resize(int newSize)
+template <typename T>
+void Stack<T>::resize(int newSize)
 {
     // int newSize = (int)(Size * 1.5);
-    int *NewStack = new int [newSize];
-
-    for (int i = 0; i < top; i++)
+    T *NewStack = new T[newSize];
+    for (int i = 0; i < Size; i++)
         NewStack[i] = ArrayStack[i];
-
     delete ArrayStack;
-    Size = newSize;
+    Capasity = newSize;
     ArrayStack = NewStack;
 }
-int Stack::pop()
+template <typename T>
+bool Stack<T>::pop(T &out)
 {
-    if (top - 1 < 0)
-    {
-        cout << "Error: Stack is empty!" << endl;
-        return 0;
-    }
-    if (top <= Size/4)
-        resize((int)(Size/2));
-    top--;
-    return ArrayStack[top];
+    if (is_empty())
+        return false;
+    if (Size <= Capasity/4)
+        resize(Capasity/2);
+    Size--;
+    out = ArrayStack[Size];
+    return true;
+}
+template <typename T>
+bool Stack<T>::top(T &out)
+{
+    if (is_empty())
+        return false;
+    out = ArrayStack[Size - 1];
+    return true;
+}
+template <typename T>
+bool Stack<T>::is_empty()
+{
+    if (Size == 0)
+        return  true;
+    return false;
+}
+template <typename T>
+int Stack<T>::size()
+{
+    return Size;
 }

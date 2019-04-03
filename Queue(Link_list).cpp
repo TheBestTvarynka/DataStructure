@@ -16,62 +16,60 @@ public:
 	Queue()
 	{
 		Main = new (Node);
-		Position=Main;
+		Position = Main;
 	};
 	void Print()
 	{
-		Node *t;
-		t=Main;
-		t=t->Next;
-		while(t!=NULL)
+		Node *t = Main->Next;
+		while (t != NULL)
 		{
-			cout<<t->Value<<" ";
-			t=t->Next;
+			cout << t->Value << " ";
+			t = t->Next;
 		}
-		cout<<endl;
+		cout << endl;
 	}
 	void Push(int Value)
 	{
 		Node *t;
-		t=Position;
-		t->Next=new Node;
-		t=t->Next;
-		t->Value=Value;
-		t->Next=NULL;
-		Position=t;
+		t = Position;
+		t->Next = new Node;
+		t = t->Next;
+		t->Value = Value;
+		t->Next = NULL;
+		Position = t;
 	}
 	void Pop()
 	{
 		Node *t;
 		Node *p;
-		t=Main->Next;
-		p=t->Next;
-		cout<<t->Value<<endl;
+		t = Main->Next;
+		p = t->Next;
+		cout << t->Value << endl;
 		delete t;
-		
-		Main->Next=p;
+
+		Main->Next = p;
 	}
 	void Front()
 	{
 		Node *t;
-		t=Main;
-		t=t->Next;
-		cout<<t->Value<<endl;
+		t = Main;
+		t = t->Next;
+		cout << t->Value << endl;
 	}
 	void Back()
 	{
 		Node *t;
-		cout<<Position->Value<<endl;
+		cout << Position->Value << endl;
 	}
 	int Size()
 	{
-		int size=0;
+		int size = 0;
 		Node *t;
-		
-		t=Main;
-		while(t->Next!=NULL)
+
+		t = Main;
+		while (t->Next != NULL)
 		{
-			t=t->Next;
+			t = t->Next;
 			size++;
 		}
 		return size;
@@ -87,7 +85,7 @@ int main()
 	A.Push(1);
 	A.Push(7);
 	A.Print();
-	
+
 	A.Pop();
 	A.Pop();
 	A.Print();
@@ -101,7 +99,7 @@ int main()
 	system("pause");
 	A.Front();
 	A.Back();
-	cout<<A.Size()<<endl;
+	cout << A.Size() << endl;
 	system("pause");
 	return 0;
 }
