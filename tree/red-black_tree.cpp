@@ -19,10 +19,12 @@ public:
 	RBTree(int item);
 	RBTree();
 	void insert(int);
+	void remove(int);
 	void print(Node *);
 
 	Node *GetHead();
-	void Balance(Node *);
+	void BalanceInsert(Node *);
+	void BalanceDelete(Node *, int);
 	Node *LeftTurn(Node *);
 	Node *RightTurn(Node *);
 	// ~RBTree();
@@ -51,14 +53,11 @@ void RBTree::print(Node *next)
 		return;
 	tabs++;
 	print(next->Left);
-
 	for (int i = 0; i < tabs; i++)
 		cout << "  ";
 	cout << next->value << endl;
-
 	print(next->Right);
 	tabs--;
-
 	return;
 }
 void RBTree::insert(int item)
@@ -72,7 +71,6 @@ void RBTree::insert(int item)
 		Head->Parent = nullptr;
 		return;
 	}
-
 	Node *t = Head, *p;
 	while (t != nullptr)
 	{
@@ -82,7 +80,6 @@ void RBTree::insert(int item)
 		else
 			t = t->Right;
 	}
-	// cout << "parent of finding node: " << p->value << endl;
 	t = new Node;
 	t->value = item;
 	t->color = true;
@@ -92,10 +89,9 @@ void RBTree::insert(int item)
 		p->Left = t;
 	else
 		p->Right = t;
-	// cout << "we allocated memory for new element..." << endl;
-	Balance(t);
+	BalanceInsert(t);
 }
-void RBTree::Balance(Node *next)
+void RBTree::BalanceInsert(Node *next)
 {
 	cout << "created element: " << next->value << endl;
 	if ((next->Parent)->color == false || (next->Parent)->Parent == nullptr)
@@ -131,7 +127,24 @@ void RBTree::Balance(Node *next)
 		}
 		else
 		{
-			cout << "I am here... What a pity..." << endl;
+			if (t->value < (t->Parent)->value)
+			{
+				t = LeftTurn(t->Parent);
+				locRoot = t->Parent;
+			}
+			if (locRoot->Left != nullptr && (locRoot->Left)->color == true)
+			{
+				(locRoot->Left)->color = false;
+				(locRoot->Right)->color = false;
+				if (locRoot != Head)
+					locRoot->color = true;
+			}
+			else
+			{
+				locRoot = RightTurn(locRoot);
+				locRoot->color = false;
+				(locRoot->Left)->color = true;
+			}
 		}
 		t = locRoot;
 		locRoot = locRoot->Parent;
@@ -139,7 +152,6 @@ void RBTree::Balance(Node *next)
 			break;
 	}
 }
-// need to check
 Node *RBTree::LeftTurn(Node *next)
 {
 	Node *t = next->Left;
@@ -160,7 +172,6 @@ Node *RBTree::LeftTurn(Node *next)
 	}
 	return t;
 }
-// need to check
 Node *RBTree::RightTurn(Node *next)
 {
 	Node *t = next->Right;
@@ -179,7 +190,165 @@ Node *RBTree::RightTurn(Node *next)
 		(t->Parent)->Right = t;
 	return t;
 }
-
+void RBTree::remove(int item)
+{
+	int key;
+	Node *t = Head;
+	Node *p = nullptr;
+	
+	while (t->value != item)
+	{
+		if (t->value <= item)
+			t = t->Right;
+		else
+			t = t->Left;
+		if (t == nullptr)
+		{
+			cout << "Element not exist..." << endl;
+			return;
+		}
+	}
+	// if t haven't any children
+	if (t->Right == nullptr && t->Left == nullptr)
+	{
+		if ((t->Parent)->value > t->value)
+			(t->Parent)->Left = nullptr;
+		else
+			(t->Parent)->Right = nullptr;
+		key = t->value;
+		cout << "deleted node have not any children... her Parent: " << (t->Parent)->value << endl;
+		if (t->color == false)
+		{
+			cout << "it is black..." << endl;
+			BalanceDelete(t->Parent, key);
+		}
+		delete t;
+		return;
+	}
+	// 
+	if (t->Right != nullptr)
+	{
+		// then we find alternative element
+		p = t->Right;
+		cout << "enter point: " << p->value << endl;
+		while (p->Left != nullptr)
+			p = p->Left;
+		t->value = p->value;
+		t = p;
+		cout << "alternative value: " << t->value << endl;
+		cout << "------------------------" << endl;
+		print(Head);
+		cout << "------------------------" << endl;
+		if (t->value < (t->Parent)->value)
+			(t->Parent)->Left = t->Right;
+		else
+			(t->Parent)->Right = t->Right;
+		if (t->Right != nullptr)
+			(t->Right)->Parent = t->Parent;
+	}
+	else
+	{
+		cout << "we went in hell..." << endl;
+		if (t->value < (t->Parent)->value)
+			(t->Parent)->Left = t->Left;
+		else
+			(t->Parent)->Right = t->Left;
+		(t->Left)->Parent = t->Parent;
+	}
+	// if deleted node is red then we just delete them
+	if (t->color == true)
+	{
+		delete t;
+		return;
+	}
+	// if right child is red then we just repaint them
+	if (t->Right != nullptr && (t->Right)->color == true)
+	{
+		(t->Right)->color = false;
+		delete t;
+		return;
+	}
+	if (t->Left != nullptr && (t->Left)->color == true)
+	{
+		(t->Left)->color = false;
+		delete t;
+		return;
+	}
+	// also we have two black node, what a pity. Balancing
+	p = t;
+	key = t->value;
+	t = t->Parent;
+	delete p;
+	BalanceDelete(t, key);
+}
+void RBTree::BalanceDelete(Node *next, int key)
+{
+	cout << "balancing called with arguments: " << next->value << " " << key << endl;
+	Node *t;
+	if (key < next->value)
+	{
+		t = next->Right;
+		if (t->color == true)
+		{
+			// simple case when brother is red
+			t = RightTurn(next);
+			t->color = false;
+			next->color = true;
+			// need to check
+			BalanceDelete(next, key);
+		}
+		else
+		{
+			cout << "brother is black..." << endl;
+			// brother is black
+			// both is red
+			if (t->Right != nullptr && t->Left != nullptr && (t->Right)->color == true && (t->Left)->color == true)
+			{
+				// need to check
+				cout << "both child is red..." << endl;
+				t = RightTurn(next);
+				t->color = next->color;
+				next->color = false;
+				(t->Right)->color = false;
+				return;
+			}
+			// both is black
+			if ((t->Right == nullptr && t->Left == nullptr))
+			{
+				cout << "both child is black -> null-lifs..." << endl;
+				t->color = true;
+				next->color = false;
+				return;
+			}
+			if (t->Right != nullptr && t->Left != nullptr && (t->Right)->color == false && (t->Left)->color == false)
+			{
+				cout << "both child is black -> lifs exist..." << endl;
+				t->color = true;
+				t = RightTurn(t);
+				t->color = next->color;
+				next->color = true;
+				(t->Right)->color = false;
+				BalanceDelete(next, key);
+				return;
+			}
+			cout << "we in last case..." << endl;
+			if (t->Left != nullptr && (t->Left)->color == true)
+			{
+				cout << "left child is red..." << endl;
+				t = LeftTurn(t);
+			}
+			t = RightTurn(next);
+			t->color = next->color;
+			next->color = false;
+			(t->Right)->color = false;
+		}
+	}
+	else
+	{
+		t = next->Right;
+		cout << "Another half of algorithm..." << endl;
+	}
+}
 int main()
 {
 	RBTree a(20);
@@ -191,6 +360,16 @@ int main()
 	while (item != 0)
 	{
 		a.insert(item);
+		temp = a.GetHead();
+		a.print(temp);
+		cin >> item;
+	}
+	
+	item = 1;
+	cin >> item;
+	while (item != 0)
+	{
+		a.remove(item);
 		temp = a.GetHead();
 		a.print(temp);
 		cin >> item;
