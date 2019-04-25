@@ -1,4 +1,8 @@
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <iomanip>
+#include <vector>
 
 using namespace std;
 
@@ -16,8 +20,10 @@ class RBTree
 	Node *Head;
 	int tabs;
 public:
+	int count_of_rotatins;
 	RBTree(int item);
 	RBTree();
+	
 	void insert(int);
 	void remove(int);
 	void print(Node *);
@@ -27,10 +33,12 @@ public:
 	void BalanceDelete(Node *, int);
 	Node *LeftTurn(Node *);
 	Node *RightTurn(Node *);
-	// ~RBTree();
+	void Clear(Node *);
+	~RBTree();
 };
 RBTree::RBTree(int item)
 {
+	count_of_rotatins = 0;
 	tabs = 0;
 	Head = new Node;
 	Head->value = item;
@@ -40,8 +48,24 @@ RBTree::RBTree(int item)
 }
 RBTree::RBTree()
 {
+	count_of_rotatins = 0;
 	tabs = 0;
 	Head = nullptr;
+}
+RBTree::~RBTree()
+{
+	Clear(Head);
+}
+void RBTree::Clear(Node *next)
+{
+	if (next == nullptr)
+		return;
+	if (next->Left != nullptr)
+		Clear(next->Left);
+	if (next->Right != nullptr)
+		Clear(next->Right);
+	delete next;
+	return;
 }
 Node *RBTree::GetHead()
 {
@@ -75,7 +99,7 @@ void RBTree::insert(int item)
 	while (t != nullptr)
 	{
 		p = t;
-		if (t->value >= item)
+		if (t->value > item)
 			t = t->Left;
 		else
 			t = t->Right;
@@ -93,62 +117,78 @@ void RBTree::insert(int item)
 }
 void RBTree::BalanceInsert(Node *next)
 {
-	cout << "created element: " << next->value << endl;
 	if ((next->Parent)->color == false || (next->Parent)->Parent == nullptr)
 		return;
 	Node *locRoot = next->Parent;
 	Node *t = next;
 
-	cout << "locRoot: " << (locRoot->Parent)->value << endl;
-
 	while (locRoot->color != false)
 	{
+
 		locRoot = locRoot->Parent;
 		if (locRoot->value > t->value)
 		{
-			if (t->value >= (t->Parent)->value)
-			{
-				t = RightTurn(t->Parent);
-				locRoot = t->Parent;
-			}
 			if (locRoot->Right != nullptr && (locRoot->Right)->color == true)
 			{
-				(locRoot->Right)->color = false;
+				locRoot->color = true;
 				(locRoot->Left)->color = false;
-				if (locRoot != Head)
-					locRoot->color = true;
+				(locRoot->Right)->color = false;
 			}
 			else
 			{
-				locRoot = LeftTurn(locRoot);
-				locRoot->color = false;
-				(locRoot->Right)->color = true;
+				if (t->value >= (t->Parent)->value)
+				{
+					t = RightTurn(t->Parent);
+					locRoot = t->Parent;
+				}
+				if (locRoot->Right != nullptr && (locRoot->Right)->color == true)
+				{
+					(locRoot->Right)->color = false;
+					(locRoot->Left)->color = false;
+					if (locRoot != Head)
+						locRoot->color = true;
+				}
+				else
+				{
+					locRoot = LeftTurn(locRoot);
+					locRoot->color = false;
+					(locRoot->Right)->color = true;
+				}
 			}
 		}
 		else
 		{
-			if (t->value < (t->Parent)->value)
-			{
-				t = LeftTurn(t->Parent);
-				locRoot = t->Parent;
-			}
 			if (locRoot->Left != nullptr && (locRoot->Left)->color == true)
 			{
+				locRoot->color = true;
 				(locRoot->Left)->color = false;
 				(locRoot->Right)->color = false;
-				if (locRoot != Head)
-					locRoot->color = true;
 			}
 			else
 			{
-				locRoot = RightTurn(locRoot);
-				locRoot->color = false;
-				(locRoot->Left)->color = true;
+				if (t->value < (t->Parent)->value)
+				{
+					t = LeftTurn(t->Parent);
+					locRoot = t->Parent;
+				}
+				if (locRoot->Left != nullptr && (locRoot->Left)->color == true)
+				{
+					(locRoot->Left)->color = false;
+					(locRoot->Right)->color = false;
+					if (locRoot != Head)
+						locRoot->color = true;
+				}
+				else
+				{
+					locRoot = RightTurn(locRoot);
+					locRoot->color = false;
+					(locRoot->Left)->color = true;
+				}
 			}
 		}
 		t = locRoot;
 		locRoot = locRoot->Parent;
-		if (locRoot == nullptr || locRoot->color == false || t->color == false)
+		if (locRoot == nullptr || locRoot == Head || locRoot->color == false || (locRoot->Parent)->color == false)
 			break;
 	}
 }
@@ -157,6 +197,8 @@ Node *RBTree::LeftTurn(Node *next)
 	Node *t = next->Left;
 	t->Parent = next->Parent;
 	next->Left = t->Right;
+	if (t->Right != nullptr)
+		(next->Left)->Parent = next;
 	t->Right = next;
 	next->Parent = t;
 	if (next == Head)
@@ -164,12 +206,10 @@ Node *RBTree::LeftTurn(Node *next)
 		Head = t;
 		return t;
 	}
-	if ((t->Parent)->value > t->value) {
+	if ((t->Parent)->value > t->value)
 		(t->Parent)->Left = t;
-	}
-	else {
+	else
 		(t->Parent)->Right = t;
-	}
 	return t;
 }
 Node *RBTree::RightTurn(Node *next)
@@ -177,6 +217,8 @@ Node *RBTree::RightTurn(Node *next)
 	Node *t = next->Right;
 	t->Parent = next->Parent;
 	next->Right = t->Left;
+	if (t->Left != nullptr)
+		(next->Right)->Parent = next;
 	t->Left = next;
 	next->Parent = t;
 	if (next == Head)
@@ -235,10 +277,10 @@ void RBTree::remove(int item)
 			p = p->Left;
 		t->value = p->value;
 		t = p;
-		cout << "alternative value: " << t->value << endl;
-		cout << "------------------------" << endl;
-		print(Head);
-		cout << "------------------------" << endl;
+		// cout << "alternative value: " << t->value << endl;
+		// cout << "------------------------" << endl;
+		// print(Head);
+		// cout << "------------------------" << endl;
 		if (t->value < (t->Parent)->value)
 			(t->Parent)->Left = t->Right;
 		else
@@ -336,8 +378,19 @@ void RBTree::BalanceDelete(Node *next, int key)
 			{
 				cout << "left child is red..." << endl;
 				t = LeftTurn(t);
+				cout << "after first rotation: " << endl;
+				// cout << "------------------------" << endl;
+				// print(Head);
+				// cout << "------------------------" << endl;
 			}
+			cout << "value of axis point: " << next->value << " " << t->value << endl;
 			t = RightTurn(next);
+
+			cout << "after second rotation: " << endl;
+			// cout << "------------------------" << endl;
+			// print(Head);
+			// cout << "------------------------" << endl;
+			
 			t->color = next->color;
 			next->color = false;
 			(t->Right)->color = false;
@@ -351,28 +404,37 @@ void RBTree::BalanceDelete(Node *next, int key)
 }
 int main()
 {
+	srand(time(NULL));
+
 	RBTree a(20);
 	Node *temp;
 	int item;
+	vector<int> input(20000);
 
 	a.print(a.GetHead());
-	cin >> item;
-	while (item != 0)
+
+	for (int i = 0; i < 20000; ++i)
 	{
-		a.insert(item);
-		temp = a.GetHead();
-		a.print(temp);
-		cin >> item;
+		input[i] = rand() % 100000;
+		cout << input[i] << " ";
+		// cin >> input[i];
 	}
-	
-	item = 1;
-	cin >> item;
-	while (item != 0)
+	cout << endl;
+	for (int j = 0; j < 20000; ++j)
 	{
-		a.remove(item);
 		temp = a.GetHead();
-		a.print(temp);
-		cin >> item;
+		a.insert(input[j]);
+		// a.print(temp);
 	}
+	// cout << a.count_of_rotatins << endl;
+	// item = 1;
+	// cin >> item;
+	// while (item != 0)
+	// {
+	// 	a.remove(item);
+	// 	temp = a.GetHead();
+	// 	a.print(temp);
+	// 	cin >> item;
+	// }
 	return 0;
 }
