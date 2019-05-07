@@ -21,9 +21,36 @@ public:
 	bool pop_priority(P &);
 	int size();
 	bool isEmpty();
+	void del_back(T &, P &);
+	void erase(T);
 	void print();
 	~queue_priority();
 };
+template <typename T, typename P>
+void queue_priority<T, P>::erase(T item)
+{
+	Node<T, P> *t = Head->Next, *p = Head;
+	while (t != nullptr && t->value != item)
+	{
+		p = t;
+		t = t->Next;
+	}
+	if (t == nullptr)
+		return;
+	p->Next = t->Next;
+	delete t;
+}
+template <typename T, typename P>
+void queue_priority<T, P>::del_back(T &value, P &priority)
+{
+	if (isEmpty())
+		return;
+	Node<T, P> *t = Head->Next;
+	value = t->value;
+	priority = t->priority;
+	Head->Next = t->Next;
+	delete t;
+}
 template <typename T, typename P>
 queue_priority<T, P>::queue_priority()
 {
@@ -51,7 +78,13 @@ void queue_priority<T, P>::push(T item, P prio)
 
 	Node<T, P> *p = Head;
 	while (p->Next != nullptr && (p->Next)->priority <= prio)
+	{
+		if ((p->Next)->priority == prio && item == (p->Next)->value)
+		{
+			return;
+		}
 		p = p->Next;
+	}
 	t->Next = p->Next;
 	p->Next = t;
 }
